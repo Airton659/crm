@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is a gestor
+    // Temporariamente simplificado - todos os usuários autenticados são gestores
+    function isGestor() {
+      return isAuthenticated();
+    }
+
+    // Leads collection
+    match /leads/{leadId} {
+      // Anyone can create a lead (PWA public form)
+      allow create: if request.resource.data.status == 'novo';
+
+      // Only gestores can read and update leads
+      allow read, update: if isGestor();
+
+      // No one can delete leads
+      allow delete: if false;
+    }
+
+    // Lead sources collection (for statistics)
+    match /lead_sources/{sourceId} {
+      // Anyone can create/update lead sources (PWA tracking)
+      allow create, update: if true;
+
+      // Gestores can read lead sources
+      allow read: if isGestor();
+
+      // No one can delete
+      allow delete: if false;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+
+      // Only gestores can read other users
+      allow read: if isGestor();
+
+      // Users can update their own data
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+
+      // No one can create or delete users (managed by Auth)
+      allow create, delete: if false;
+    }
+
+    // Configurations collection
+    match /configurations/{configId} {
+      // Only gestores can read/write configurations
+      allow read, write: if isGestor();
+    }
+
+    // Statistics collection
+    match /statistics/{statId} {
+      // System can update statistics
+      allow create, update: if true;
+
+      // Gestores can read statistics
+      allow read: if isGestor();
+
+      // No one can delete
+      allow delete: if false;
+    }
+
+    // Default deny for everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

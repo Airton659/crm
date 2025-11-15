@@ -1,0 +1,67 @@
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VSCode related
+.vscode/
+
+# macOS related
+.DS_Store
+
+# Firebase
+**/google-services.json
+**/GoogleService-Info.plist
+**/.firebase/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Node.js (para Firebase)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# IDE - Android Studio
+.gradle/
+local.properties
+*.apk
+*.ap_
+*.aab
+
+# Web build artifacts (vamos manter no repo para deploy)
+# Se quiser ignorar, descomente a linha abaixo
+# **/build/web/
+
+# Coverage
+coverage/
+
+# Secrets
+*.key
+*.keystore
+*.jks
+secrets/

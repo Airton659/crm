@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protótipo PWA - Grupo Solar</title>
+    <!-- Carrega o Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Inter (moderna e profissional) --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo customizado para o gráfico de pizza (CSS puro) */
+        .pie-chart {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #f59e0b 0% 35%,   /* Amarelo Laranja - Buscas */
+                #3b82f6 35% 65%, /* Azul - Propagandas */
+                #10b981 65% 90%, /* Verde - Indicação */
+                #6b7280 90% 100% /* Cinza - Outros */
+            );
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 
+      TELA 1: VISÃO DO CLIENTE 
+    --><div id="client-view" class="">
+        <header class="bg-white shadow-md">
+            <nav class="container mx-auto max-w-5xl px-4 py-4 flex justify-between items-center">
+                <!-- Logo --><div class="flex items-center space-x-2">
+                    <!-- Substituindo o link incorreto pelo link direto correto --><img src="https://i.postimg.cc/9rTWJQYM/LOGO-GSB-redimensionado-para-pequeno-convertido-de-jpeg.png" alt="Logo GSB Grupo Solar" class="h-12 w-auto">
+                </div>
+                <!-- Link para a tela do Gestor --><div>
+                    <a href="#" id="to-manager-btn" class="text-sm text-gray-600 hover:text-blue-700 font-medium">Acesso Gestor</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container mx-auto max-w-5xl px-4 py-8 space-y-12">
+            
+            <!-- Seção: Simulação --><section class="bg-blue-900 text-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-3xl font-bold mb-4">Transforme Luz do Sol em Economia</h2>
+                <p class="mb-6 opacity-90">Simule seu sistema de energia solar e veja o quanto você pode economizar na sua conta de luz.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label for="consumo" class="block text-sm font-medium mb-1 text-yellow-400">Seu consumo médio mensal (kWh)</label>
+                        <input type="text" id="consumo" placeholder="Ex: 500 kWh" class="w-full p-3 rounded-md bg-blue-800 border border-blue-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                    </div>
+                    <div>
+                        <label for="telhado" class="block text-sm font-medium mb-1 text-yellow-400">Tipo de Telhado</label>
+                        <select id="telhado" class="w-full p-3 rounded-md bg-blue-800 border border-blue-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                            <option>Cerâmico</option>
+                            <option>Metálico</option>
+                            <option>Laje</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="mt-6 w-full md:w-auto bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-8 rounded-lg transition duration-300 shadow-md">
+                    Simular Agora
+                </button>
+            </section>
+
+            <!-- Seção: Orçamentos / Serviços --><section>
+                <h2 class="text-2xl font-bold text-center text-blue-900 mb-8">Soluções Completas para Você</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Card Orçamento (Removido Residencial) --><!-- Card COMÉRCIO (Atualizado) --><div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2">COMÉRCIO</h3>
+                        <p class="text-gray-600 mb-4">Comprovadamente empresas na Europa e Ásia se tornaram mais competitivas no preço de seus produtos após não se preocuparem mais com a conta de luz.</p>
+                        <a href="#" class="font-medium text-yellow-600 hover:text-yellow-500">Solicitar Orçamento &rarr;</a>
+                    </div>
+                    <!-- Card ESCOLA (Atualizado) --><div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2">ESCOLA</h3>
+                        <p class="text-gray-600 mb-4">Escolas conseguem diminuir as despesas mensais e investir em mais qualidade de ensino. Com a verba extra da economia com o sistema de energia solar, escolas podem focar na qualidade do ensino e outros requisitos.</p>
+                        <a href="#" class="font-medium text-yellow-600 hover:text-yellow-500">Solicitar Orçamento &rarr;</a>
+                    </div>
+                    <!-- Card INDÚSTRIA (Atualizado) --><div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2">INDÚSTRIA</h3>
+                        <p class="text-gray-600 mb-4">Podemos afirmar que para a indústria gerar sua própria energia através de sistema solar hoje é uma necessidade. O maior vilão na produção industrial nacional é a conta de luz.</p>
+                        <a href="#" class="font-medium text-yellow-600 hover:text-yellow-500">Solicitar Orçamento &rarr;</a>
+                    </div>
+                    <!-- Card CONDOMÍNIO (Atualizado) --><div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2">CONDOMÍNIO</h3>
+                        <p class="text-gray-600 mb-4">Condomínios comerciais e residenciais são um dos setores responsáveis pelo impulsionamento e aumento da instalação de sistemas solares no Brasil.</p>
+                        <a href="#" class="font-medium text-yellow-600 hover:text-yellow-500">Solicitar Orçamento &rarr;</a>
+                    </div>
+                    <!-- Card MERCADO LIVRE (Atualizado) --><div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2">MERCADO LIVRE</h3>
+                        <p class="text-gray-600 mb-4">Já pensou em transmitir energia para empresas, comércios e condomínios com desconto e faturando por 25 anos? Este é o melhor investimento da atualidade e o Grupo Solar Brasil é uma das poucas empresas nacionais com esta real experiência.</p>
+                        <a href="#" class="font-medium text-yellow-600 hover:text-yellow-500">Saiba Mais &rarr;</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Opiniões de Usuários --><section>
+                <h2 class="text-2xl font-bold text-center text-blue-900 mb-8">O que nossos clientes dizem</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <blockquote class="border-l-4 border-yellow-500 pl-4">
+                            <p class="text-gray-700 italic">"O atendimento foi impecável do início ao fim. Minha conta de luz reduziu em 90%!"</p>
+                            <cite class="block text-right not-italic text-blue-900 font-medium mt-2">- Maria S., Cliente Residencial</cite>
+                        </blockquote>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <blockquote class="border-l-4 border-yellow-500 pl-4">
+                            <p class="text-gray-700 italic">"Investimento com retorno rápido. A equipe do Grupo Solar é muito profissional e qualificada."</p>
+                            <cite class="block text-right not-italic text-blue-900 font-medium mt-2">- João P., Dono de Padaria</cite>
+                        </blockquote>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Perguntas Frequentes (FAQ) --><section>
+                <h2 class="text-2xl font-bold text-center text-blue-900 mb-8">Perguntas Frequentes</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="font-medium text-blue-900">Em quanto tempo tenho o retorno do investimento?</h3>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="font-medium text-blue-900">Como funciona a instalação?</h3>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="font-medium text-blue-900">Preciso de manutenção nos painéis?</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Contato --><section class="bg-white p-8 rounded-lg shadow-md text-center">
+                <h2 class="text-2xl font-bold text-blue-900 mb-4">Fale Conosco</h2>
+                <p class="text-gray-600 mb-6">Pronto para começar a economizar? Entre em contato com nossos especialistas.</p>
+                <div class="flex flex-col md:flex-row justify-center gap-6 mb-6">
+                    <span class="text-gray-700 font-medium">contato@gruposolar.com</span>
+                    <span class="text-gray-700 font-medium">(79) 99999-8888</span>
+                </div>
+                <button class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+                    Entrar em Contato por WhatsApp
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- 
+      TELA 2: VISÃO DO GESTOR (Dashboard)
+      Inicialmente oculta (class="hidden")
+    --><div id="manager-view" class="hidden">
+        <header class="bg-blue-900 shadow-md">
+            <nav class="container mx-auto max-w-5xl px-4 py-4 flex justify-between items-center">
+                <!-- Título --><div class="flex items-center space-x-2">
+                    <!-- Ícone de Gráfico --><svg class="h-8 w-8 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                    <span class="text-2xl font-bold text-white">Painel do Gestor</span>
+                </div>
+                <!-- Link para a tela do Cliente --><div>
+                    <a href="#" id="to-client-btn" class="text-sm text-gray-300 hover:text-white font-medium">Ver Site Público</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container mx-auto max-w-5xl px-4 py-8 space-y-12">
+            
+            <!-- Seção: KPIs (Indicadores) --><section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-500">Novos Leads (Mês)</h3>
+                    <p class="text-4xl font-bold text-blue-900">42</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-500">Orçamentos Enviados</h3>
+                    <p class="text-4xl font-bold text-blue-900">18</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-500">Projetos Fechados</h3>
+                    <p class="text-4xl font-bold text-green-600">5</p>
+                </div>
+            </section>
+
+            <!-- Seção: Análise de Origem dos Leads --><section class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold text-blue-900 mb-6">Análise de Origem dos Leads</h2>
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <!-- Gráfico de Pizza (CSS) --><div class="pie-chart flex-shrink-0"></div>
+                    
+                    <!-- Legenda --><div class="w-full space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-yellow-500 block mr-2"></span>
+                                <span class="text-gray-700">Buscas (Google)</span>
+                            </div>
+                            <span class="font-bold text-gray-800">35%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-blue-500 block mr-2"></span>
+                                <span class="text-gray-700">Propagandas (Instagram)</span>
+                            </div>
+                            <span class="font-bold text-gray-800">30%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-green-500 block mr-2"></span>
+                                <span class="text-gray-700">Indicação</span>
+                            </div>
+                            <span class="font-bold text-gray-800">25%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="h-4 w-4 rounded-full bg-gray-400 block mr-2"></span>
+                                <span class="text-gray-700">Outros</span>
+                            </div>
+                            <span class="font-bold text-gray-800">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Acompanhamento de Leads (Funil) --><section>
+                <h2 class="text-xl font-bold text-blue-900 mb-6">Acompanhamento de Leads</h2>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <ul class="divide-y divide-gray-200">
+                        <!-- Item Lead --><li class="p-4 flex flex-col md:flex-row justify-between md:items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900">Ana Beatriz Silva</h3>
+                                <p class="text-sm text-gray-500">ana.silva@email.com | (11) 98888-7777</p>
+                            </div>
+                            <div class="flex items-center space-x-4 mt-3 md:mt-0">
+                                <span class="text-sm font-medium text-blue-500">Origem: Instagram</span>
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    Novo
+                                </span>
+                            </div>
+                        </li>
+                        <!-- Item Lead --><li class="p-4 flex flex-col md:flex-row justify-between md:items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900">Bruno Costa</h3>
+                                <p class="text-sm text-gray-500">bruno.costa@email.com | (21) 97777-6666</p>
+                            </div>
+                            <div class="flex items-center space-x-4 mt-3 md:mt-0">
+                                <span class="text-sm font-medium text-yellow-600">Origem: Buscas (Google)</span>
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    Orçamento Enviado
+                                </span>
+                            </div>
+                        </li>
+                        <!-- Item Lead --><li class="p-4 flex flex-col md:flex-row justify-between md:items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900">Carla Dias</h3>
+                                <p class="text-sm text-gray-500">carla.dias@email.com | (81) 96666-5555</p>
+                            </div>
+                            <div class="flex items-center space-x-4 mt-3 md:mt-0">
+                                <span class="text-sm font-medium text-green-600">Origem: Indicação</span>
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                    Em Contato
+                                </span>
+                            </div>
+                        </li>
+                         <!-- Item Lead --><li class="p-4 flex flex-col md:flex-row justify-between md:items-center">
+                            <div>
+                                <h3 class="font-medium text-gray-900">Diego Fernandes</h3>
+                                <p class="text-sm text-gray-500">diego.fernandes@email.com | (31) 95555-4444</p>
+                            </div>
+                            <div class="flex items-center space-x-4 mt-3 md:mt-0">
+                                <span class="text-sm font-medium text-green-600">Origem: Indicação</span>
+                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    Fechado
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script para alternar as telas --><script>
+        // Seleciona os elementos
+        const clientView = document.getElementById('client-view');
+        const managerView = document.getElementById('manager-view');
+        const toManagerBtn = document.getElementById('to-manager-btn');
+        const toClientBtn = document.getElementById('to-client-btn');
+
+        // Função para mostrar tela do Gestor
+        toManagerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            clientView.classList.add('hidden');
+            managerView.classList.remove('hidden');
+            window.scrollTo(0, 0); // Rola para o topo
+        });
+
+        // Função para mostrar tela do Cliente
+        toClientBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            managerView.classList.add('hidden');
+            clientView.classList.remove('hidden');
+            window.scrollTo(0, 0); // Rola para o topo
+        });
+    </script>
+
+</body>
+</html>

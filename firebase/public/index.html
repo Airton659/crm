@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Grupo Solar Brasil - Transforme luz do sol em economia. Energia solar para residências, comércios, indústrias e condomínios.">
+  <meta name="keywords" content="energia solar, painel solar, economia energia, sustentabilidade">
+  <meta name="author" content="Grupo Solar Brasil">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Grupo Solar">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Grupo Solar Brasil - Energia Solar</title>
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+</head>
+<body>
+  <!-- Loading indicator -->
+  <div id="loading" style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1E3A8A;
+  ">
+    <div style="text-align: center; color: white;">
+      <h1 style="font-family: sans-serif; font-size: 24px; margin-bottom: 20px;">Grupo Solar</h1>
+      <div style="
+        border: 4px solid #F59E0B;
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      "></div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+  <script>
+    // FORÇAR RESET DAS MÉTRICAS DE ANALYTICS A CADA NAVEGAÇÃO
+    (function() {
+      // Detectar se é uma nova navegação (reload, nova aba, etc)
+      var analyticsResetFlag = sessionStorage.getItem('analytics_reset_flag');
+      var currentNavigation = performance.timing.navigationStart;
+
+      console.log('🔄 NAVEGAÇÃO DETECTADA - navigationStart:', currentNavigation);
+      console.log('🔍 Flag anterior:', analyticsResetFlag);
+
+      // Se não existe flag OU é diferente da navegação atual, é um reload/nova navegação
+      if (!analyticsResetFlag || analyticsResetFlag !== currentNavigation.toString()) {
+        console.log('🆕 NOVA NAVEGAÇÃO - Marcando para reset de analytics');
+        sessionStorage.setItem('analytics_reset_flag', currentNavigation.toString());
+        sessionStorage.setItem('analytics_must_reset', 'true');
+      } else {
+        console.log('♻️ Mesma navegação (hot reload)');
+        sessionStorage.setItem('analytics_must_reset', 'false');
+      }
+    })();
+
+    // Capturar parâmetros UTM ANTES do Flutter inicializar
+    (function() {
+      console.log('🔴 SCRIPT EXECUTANDO - URL atual:', window.location.href);
+      console.log('🔴 SCRIPT EXECUTANDO - Search:', window.location.search);
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var utmParams = {
+        utm_source: urlParams.get('utm_source'),
+        utm_medium: urlParams.get('utm_medium'),
+        utm_campaign: urlParams.get('utm_campaign'),
+        utm_content: urlParams.get('utm_content'),
+        utm_term: urlParams.get('utm_term')
+      };
+
+      console.log('🔴 PARAMS EXTRAIDOS:', utmParams);
+
+      // Salvar no sessionStorage para o Flutter acessar depois
+      if (utmParams.utm_source || utmParams.utm_medium || utmParams.utm_campaign) {
+        sessionStorage.setItem('utm_params', JSON.stringify(utmParams));
+        console.log('✅ UTM params capturados e salvos:', utmParams);
+      } else {
+        console.log('❌ Nenhum parametro UTM encontrado');
+      }
+    })();
+
+    // Remove loading indicator when Flutter loads
+    window.addEventListener('flutter-first-frame', function() {
+      var loading = document.getElementById('loading');
+      if (loading) {
+        loading.remove();
+      }
+    });
+
+    const serviceWorkerVersion = "3355643873";
+    var scriptLoaded = false;
+    function loadMainDartJs() {
+      if (scriptLoaded) {
+        return;
+      }
+      scriptLoaded = true;
+      var scriptTag = document.createElement('script');
+      scriptTag.src = 'main.dart.js';
+      scriptTag.type = 'application/javascript';
+      document.body.append(scriptTag);
+    }
+
+    // DESABILITAR SERVICE WORKER TEMPORARIAMENTE PARA FORÇAR RELOAD DO MAIN
+    // Service Worker estava impedindo o main() de ser executado novamente
+    if ('serviceWorker' in navigator) {
+      // Desregistrar service workers existentes
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+          console.log('🗑️ Service Worker desregistrado');
+        }
+      });
+    }
+
+    // Carregar o app SEM service worker
+    loadMainDartJs();
+  </script>
+</body>
+</html>
