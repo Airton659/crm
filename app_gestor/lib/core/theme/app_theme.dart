@@ -64,6 +64,15 @@ class AppTheme {
         return const Color(0xFF10B981); // Green
       case 'perdido':
         return const Color(0xFFEF4444); // Red
+
+      // Status antigos (para compatibilidade)
+      case 'em_atendimento':
+        return const Color(0xFF9CA3AF); // Gray (mesmo que em_contato)
+      case 'proposta_enviada':
+        return const Color(0xFF3B82F6); // Blue (mesmo que orcamento_enviado)
+      case 'convertido':
+        return const Color(0xFF10B981); // Green (mesmo que fechado)
+
       default:
         return const Color(0xFF6B7280); // Default gray
     }
@@ -84,8 +93,22 @@ class AppTheme {
         return 'Fechado';
       case 'perdido':
         return 'Perdido';
+
+      // Status antigos (para compatibilidade com dados existentes)
+      case 'em_atendimento':
+        return 'Em Contato';
+      case 'proposta_enviada':
+        return 'Orçamento Enviado';
+      case 'convertido':
+        return 'Fechado';
+
       default:
-        return status;
+        // Formatar texto: substituir underscore por espaço e capitalizar
+        return status
+            .replaceAll('_', ' ')
+            .split(' ')
+            .map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1))
+            .join(' ');
     }
   }
 

@@ -29,3 +29,16 @@ class UpdateLeadStatusEvent extends LeadsEvent {
   @override
   List<Object?> get props => [leadId, newStatus];
 }
+
+class UpdateLeadQualificacaoEvent extends LeadsEvent {
+  final String leadId;
+  final String newQualificacao;
+
+  const UpdateLeadQualificacaoEvent({
+    required this.leadId,
+    required this.newQualificacao,
+  });
+
+  @override
+  List<Object?> get props => [leadId, newQualificacao];
+}

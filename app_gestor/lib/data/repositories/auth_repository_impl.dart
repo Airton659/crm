@@ -27,12 +27,14 @@ class AuthRepositoryImpl implements AuthRepository {
       // para evitar erro PERMISSION_DENIED no Firestore
       return Right(credential.user!);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return const Left('Usuário não encontrado');
-      } else if (e.code == 'wrong-password') {
-        return const Left('Senha incorreta');
+      if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        return const Left('Credenciais inválidas. Verifique seu e-mail e senha.');
+      } else if (e.code == 'user-disabled') {
+        return const Left('Usuário desabilitado. Entre em contato com o suporte.');
+      } else if (e.code == 'too-many-requests') {
+        return const Left('Muitas tentativas de login. Tente novamente mais tarde.');
       }
-      return Left('Erro: ${e.message}');
+      return const Left('Credenciais inválidas. Verifique seu e-mail e senha.');
     } catch (e) {
       return Left('Erro ao fazer login: ${e.toString()}');
     }

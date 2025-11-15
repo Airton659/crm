@@ -150,11 +150,23 @@ class AnalyticsTracker {
     // Scroll depth final
     _trackScrollDepth();
 
+    // Captura hora, minuto, dia da semana e data de submissão
+    final submissionHour = now.hour;
+    final submissionTime = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    final submissionDayOfWeek = now.weekday; // 1=Monday, 7=Sunday
+    final submissionDayName = _getDayName(now.weekday);
+    final submissionDate = '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
+
     final analytics = AnalyticsData(
       timeOnPageSeconds: timeOnPage,
       timeToFillFormSeconds: timeToFillForm,
       scrollDepthPercent: _maxScrollDepth.round(),
       formInteractions: _formInteractions,
+      submissionHour: submissionHour,
+      submissionTime: submissionTime,
+      submissionDayOfWeek: submissionDayOfWeek,
+      submissionDayName: submissionDayName,
+      submissionDate: submissionDate,
     );
 
     print('📊 Métricas capturadas: ${analytics.toJson()}');
@@ -163,6 +175,28 @@ class AnalyticsTracker {
     reset();
 
     return analytics;
+  }
+
+  /// Retorna o nome do dia da semana em português
+  static String _getDayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Segunda-feira';
+      case 2:
+        return 'Terça-feira';
+      case 3:
+        return 'Quarta-feira';
+      case 4:
+        return 'Quinta-feira';
+      case 5:
+        return 'Sexta-feira';
+      case 6:
+        return 'Sábado';
+      case 7:
+        return 'Domingo';
+      default:
+        return '';
+    }
   }
 
   /// Reset das métricas (útil para testes)

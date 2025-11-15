@@ -38,6 +38,17 @@ class AnalyticsData extends Equatable {
     );
   }
 
+  /// Retorna o horário formatado corretamente
+  /// Se submissionTime for "00:00", usa o submissionHour para criar o formato
+  String get formattedSubmissionTime {
+    if (submissionTime != '00:00') {
+      return submissionTime;
+    }
+    // Se for 00:00, tenta formatar usando submissionHour
+    final hour = submissionHour.toString().padLeft(2, '0');
+    return '$hour:00';
+  }
+
   @override
   List<Object?> get props => [
         timeOnPageSeconds,

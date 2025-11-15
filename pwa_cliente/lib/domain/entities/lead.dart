@@ -5,12 +5,22 @@ class AnalyticsData extends Equatable {
   final int timeToFillFormSeconds;
   final int scrollDepthPercent;
   final int formInteractions;
+  final int submissionHour;
+  final String submissionTime;
+  final int submissionDayOfWeek;
+  final String submissionDayName;
+  final String submissionDate;
 
   const AnalyticsData({
     required this.timeOnPageSeconds,
     required this.timeToFillFormSeconds,
     required this.scrollDepthPercent,
     required this.formInteractions,
+    required this.submissionHour,
+    required this.submissionTime,
+    required this.submissionDayOfWeek,
+    required this.submissionDayName,
+    required this.submissionDate,
   });
 
   @override
@@ -19,6 +29,11 @@ class AnalyticsData extends Equatable {
         timeToFillFormSeconds,
         scrollDepthPercent,
         formInteractions,
+        submissionHour,
+        submissionTime,
+        submissionDayOfWeek,
+        submissionDayName,
+        submissionDate,
       ];
 
   Map<String, dynamic> toJson() {
@@ -27,6 +42,11 @@ class AnalyticsData extends Equatable {
       'time_to_fill_form_seconds': timeToFillFormSeconds,
       'scroll_depth_percent': scrollDepthPercent,
       'form_interactions': formInteractions,
+      'submission_hour': submissionHour,
+      'submission_time': submissionTime,
+      'submission_day_of_week': submissionDayOfWeek,
+      'submission_day_name': submissionDayName,
+      'submission_date': submissionDate,
     };
   }
 
@@ -36,6 +56,11 @@ class AnalyticsData extends Equatable {
       timeToFillFormSeconds: json['time_to_fill_form_seconds'] ?? 0,
       scrollDepthPercent: json['scroll_depth_percent'] ?? 0,
       formInteractions: json['form_interactions'] ?? 0,
+      submissionHour: json['submission_hour'] ?? 0,
+      submissionTime: json['submission_time'] ?? '00:00',
+      submissionDayOfWeek: json['submission_day_of_week'] ?? 0,
+      submissionDayName: json['submission_day_name'] ?? '',
+      submissionDate: json['submission_date'] ?? '',
     );
   }
 }

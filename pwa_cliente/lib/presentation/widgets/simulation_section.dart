@@ -84,7 +84,19 @@ class _SimulationSectionState extends State<SimulationSection> {
   }
 
   void _handleSliderChange(double value) {
-    final newConsumption = value.round();
+    // Encontrar o valor mais próximo da tabela
+    final consumptions = InvestmentCalculator.getAvailableConsumptions();
+    int newConsumption = consumptions.first;
+    double menorDiferenca = (value - consumptions.first).abs();
+
+    for (final consumption in consumptions) {
+      final diferenca = (value - consumption).abs();
+      if (diferenca < menorDiferenca) {
+        menorDiferenca = diferenca;
+        newConsumption = consumption;
+      }
+    }
+
     if (newConsumption != _selectedConsumption) {
       setState(() {
         _selectedConsumption = newConsumption;
@@ -376,8 +388,9 @@ class _SimulationSectionState extends State<SimulationSection> {
 
   Widget _buildConsumptionSlider() {
     final consumptions = InvestmentCalculator.getAvailableConsumptions();
-    final minConsumption = consumptions.first.toDouble();
-    final maxConsumption = consumptions.last.toDouble();
+    // Usar índice ao invés de valor direto para evitar interpolação
+    final currentIndex = consumptions.indexOf(_selectedConsumption);
+    final sliderIndex = currentIndex >= 0 ? currentIndex.toDouble() : 1.0;
 
     return Stack(
       children: [
@@ -419,12 +432,15 @@ class _SimulationSectionState extends State<SimulationSection> {
                 ),
               ),
               child: Slider(
-                value: _selectedConsumption.toDouble(),
-                min: minConsumption,
-                max: maxConsumption,
+                value: sliderIndex,
+                min: 0,
+                max: (consumptions.length - 1).toDouble(),
                 divisions: consumptions.length - 1,
                 label: '$_selectedConsumption kWh',
-                onChanged: _handleSliderChange,
+                onChanged: (index) {
+                  final consumption = consumptions[index.round()];
+                  _handleSliderChange(consumption.toDouble());
+                },
               ),
             ),
             // Labels do slider
@@ -432,7 +448,7 @@ class _SimulationSectionState extends State<SimulationSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: consumptions.map((consumption) {
                 return Text(
-                  '${consumption}',
+                  '$consumption',
                   style: TextStyle(
                     color: _selectedConsumption == consumption
                         ? const Color(0xFF10B981)

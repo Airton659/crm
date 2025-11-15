@@ -41,15 +41,21 @@ class GrupoSolarGestorApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
+            // AuthInitial - verificando auth status inicial
+            if (state is AuthInitial) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            // AuthAuthenticated - usuário logado
             if (state is AuthAuthenticated) {
               return const DashboardPage();
-            } else if (state is AuthUnauthenticated || state is AuthError) {
-              return const LoginPage();
             }
-            // Loading (AuthInitial ou AuthLoading)
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
+
+            // AuthUnauthenticated, AuthError, AuthLoading - todos mostram LoginPage
+            // A LoginPage é responsável por gerenciar o loading do login
+            return const LoginPage();
           },
         ),
       ),

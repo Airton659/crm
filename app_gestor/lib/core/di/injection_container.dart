@@ -14,6 +14,7 @@ import '../../domain/repositories/interacao_repository.dart';
 import '../../domain/repositories/agendamento_repository.dart';
 import '../../domain/usecases/get_leads.dart';
 import '../../domain/usecases/update_lead_status.dart';
+import '../../domain/usecases/update_lead_qualificacao.dart';
 import '../../domain/usecases/get_statistics.dart';
 import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_out.dart';
@@ -21,6 +22,8 @@ import '../../domain/usecases/check_auth_status.dart';
 import '../../presentation/bloc/auth/auth_bloc.dart';
 import '../../presentation/bloc/leads/leads_bloc.dart';
 import '../../presentation/bloc/statistics/statistics_bloc.dart';
+import '../../presentation/bloc/interacao/interacao_bloc.dart';
+import '../../presentation/bloc/agendamento/agendamento_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -35,10 +38,19 @@ Future<void> init() async {
   sl.registerFactory(() => LeadsBloc(
         getLeads: sl(),
         updateLeadStatus: sl(),
+        updateLeadQualificacao: sl(),
       ));
 
   sl.registerFactory(() => StatisticsBloc(
         getStatistics: sl(),
+      ));
+
+  sl.registerFactory(() => InteracaoBloc(
+        repository: sl(),
+      ));
+
+  sl.registerFactory(() => AgendamentoBloc(
+        repository: sl(),
       ));
 
   // Use Cases
@@ -47,6 +59,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CheckAuthStatus(sl()));
   sl.registerLazySingleton(() => GetLeads(sl()));
   sl.registerLazySingleton(() => UpdateLeadStatus(sl()));
+  sl.registerLazySingleton(() => UpdateLeadQualificacao(sl()));
   sl.registerLazySingleton(() => GetStatistics(sl()));
 
   // Repositories

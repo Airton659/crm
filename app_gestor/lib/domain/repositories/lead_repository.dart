@@ -8,4 +8,6 @@ abstract class LeadRepository {
   });
 
   Future<Either<String, void>> updateLeadStatus(String leadId, String newStatus);
+
+  Future<Either<String, void>> updateLeadQualificacao(String leadId, String newQualificacao);
 }
