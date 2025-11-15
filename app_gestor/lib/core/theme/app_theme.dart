@@ -88,4 +88,32 @@ class AppTheme {
         return status;
     }
   }
+
+  // Qualificação colors
+  static Color getQualificacaoColor(String qualificacao) {
+    switch (qualificacao.toLowerCase()) {
+      case 'frio':
+        return const Color(0xFF3B82F6); // Azul
+      case 'morno':
+        return const Color(0xFFFBBF24); // Amarelo
+      case 'quente':
+        return const Color(0xFFEF4444); // Vermelho
+      default:
+        return const Color(0xFFFBBF24); // Default: Morno
+    }
+  }
+
+  // Qualificação display names
+  static String getQualificacaoDisplay(String qualificacao) {
+    switch (qualificacao.toLowerCase()) {
+      case 'frio':
+        return 'Frio 🔵';
+      case 'morno':
+        return 'Morno 🟡';
+      case 'quente':
+        return 'Quente 🔴';
+      default:
+        return 'Morno 🟡';
+    }
+  }
 }

@@ -204,6 +204,25 @@ class _DashboardPageState extends State<DashboardPage> {
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    // Badge de qualificação
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: AppTheme.getQualificacaoColor(lead.qualificacao),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        lead.qualificacaoEmoji,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
                                     IconButton(
                                       icon: const Icon(Icons.phone, size: 20),
                                       onPressed: () => _makePhoneCall(lead.telefone),
