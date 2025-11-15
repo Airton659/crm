@@ -199,6 +199,17 @@ class _DashboardPageState extends State<DashboardPage> {
                                         color: Color(0xFF6B7280),
                                       ),
                                     ),
+                                    if (lead.ultimaInteracao != null) ...[
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Último contato: ${_formatLastInteraction(lead.ultimaInteracao!)}',
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Color(0xFF9CA3AF),
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                                 trailing: Row(
@@ -263,6 +274,30 @@ class _DashboardPageState extends State<DashboardPage> {
         },
       ),
     );
+  }
+
+  String _formatLastInteraction(DateTime lastInteraction) {
+    final now = DateTime.now();
+    final difference = now.difference(lastInteraction);
+
+    if (difference.inMinutes < 1) {
+      return 'agora mesmo';
+    } else if (difference.inMinutes < 60) {
+      return 'há ${difference.inMinutes}min';
+    } else if (difference.inHours < 24) {
+      return 'há ${difference.inHours}h';
+    } else if (difference.inDays < 7) {
+      return 'há ${difference.inDays}d';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return 'há ${weeks}sem';
+    } else if (difference.inDays < 365) {
+      final months = (difference.inDays / 30).floor();
+      return 'há ${months}m';
+    } else {
+      final years = (difference.inDays / 365).floor();
+      return 'há ${years}a';
+    }
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
