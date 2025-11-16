@@ -113,12 +113,19 @@ class _AddAgendamentoDialogState extends State<AddAgendamentoDialog> {
       });
 
       // Registrar interação
+      final observacoesInteracao = StringBuffer();
+      observacoesInteracao.write('📅 ${_formatDateTime(dataHora)}\n');
+      observacoesInteracao.write('📍 ${_localController.text.trim()}');
+      if (_observacoesController.text.trim().isNotEmpty) {
+        observacoesInteracao.write('\n💬 ${_observacoesController.text.trim()}');
+      }
+
       await FirebaseFirestore.instance.collection('interacoes').add({
         'lead_id': widget.leadId,
         'data_hora': Timestamp.now(),
         'tipo': 'agendamento',
         'descricao': 'Agendamento criado: ${_tiposAgendamento[_tipoSelecionado]}',
-        'observacoes': 'Data/Hora: ${_formatDateTime(dataHora)}',
+        'observacoes': observacoesInteracao.toString(),
       });
 
       if (mounted) {

@@ -41,5 +41,25 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated() && request.auth.uid == userId;
     }
+
+    // Collection: configurations
+    match /configurations/{configId} {
+      // Leitura permitida para TODOS (PWA precisa ler configurações do slider)
+      allow read: if true;
+      // Escrita apenas para autenticados (App Gestor)
+      allow write: if isAuthenticated();
+    }
+
+    // Collection: campaigns
+    match /campaigns/{campaignId} {
+      // Leitura e escrita apenas para autenticados (App Gestor)
+      allow read, write: if isAuthenticated();
+    }
+
+    // Collection: lead_sources (analytics de origem)
+    match /lead_sources/{sourceId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
   }
 }

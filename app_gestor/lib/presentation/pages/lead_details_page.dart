@@ -159,13 +159,13 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
               const SizedBox(height: 16),
             ],
 
-            // Status e Prioridade
+            // Status e Qualificação
             _buildSection(
               title: 'Status',
               child: Column(
                 children: [
-                  _buildInfoRow('Status', _formatStatus(widget.lead.status)),
-                  _buildInfoRow('Prioridade', _formatPrioridade(widget.lead.prioridade)),
+                  _buildInfoRow('Status', AppTheme.getStatusDisplay(_currentStatus)),
+                  _buildInfoRow('Qualificação', _formatQualificacao(_currentQualificacao)),
                   _buildInfoRow(
                     'Criado em',
                     _formatDateTime(widget.lead.createdAt),
@@ -643,18 +643,20 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
   Color _getInteracaoColor(String tipo) {
     switch (tipo.toLowerCase()) {
       case 'ligacao':
-        return Colors.blue;
+        return Colors.green;
       case 'whatsapp':
         return Colors.green;
       case 'email':
-        return Colors.orange;
+        return Colors.red;
       case 'reuniao':
       case 'visita':
         return Colors.purple;
+      case 'agendamento_concluido':
+        return Colors.green;
       case 'status_change':
-        return Colors.indigo;
+        return Colors.orange;
       case 'nota':
-        return Colors.amber;
+        return Colors.blue;
       default:
         return Colors.grey;
     }
@@ -872,7 +874,9 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
                 const Icon(Icons.access_time, size: 14, color: Colors.grey),
                 const SizedBox(width: 4),
                 Text(
-                  _formatDateTime(agendamento.dataHora),
+                  isHoje
+                      ? _formatTime(agendamento.dataHora)
+                      : _formatDateTime(agendamento.dataHora),
                   style: const TextStyle(fontSize: 12),
                 ),
               ],
@@ -961,35 +965,41 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
   }
 
   Future<void> _marcarAgendamentoConcluido(Agendamento agendamento) async {
-    final resultado = await showDialog<String>(
+    String resultadoTexto = '';
+
+    final confirmado = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Marcar como Concluído'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Deseja marcar "${_getAgendamentoTipoDisplay(agendamento.tipo)}" como concluído?'),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Resultado (opcional)',
-                hintText: 'Ex: Cliente interessado, enviar proposta',
-                border: OutlineInputBorder(),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Deseja marcar "${_getAgendamentoTipoDisplay(agendamento.tipo)}" como concluído?'),
+              const SizedBox(height: 16),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Resultado (opcional)',
+                  hintText: 'Ex: Cliente interessado, enviar proposta',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+                autofocus: true,
+                onChanged: (value) {
+                  resultadoTexto = value;
+                },
               ),
-              maxLines: 3,
-              onChanged: (value) {
-                // Armazenar o valor
-              },
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancelar'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(context, ''),
+            onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.successGreen,
               foregroundColor: Colors.white,
@@ -1000,7 +1010,9 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
       ),
     );
 
-    if (resultado != null) {
+    if (confirmado == true) {
+      final resultadoFinal = resultadoTexto.trim();
+
       try {
         await FirebaseFirestore.instance
             .collection('agendamentos')
@@ -1008,16 +1020,16 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
             .update({
           'concluido': true,
           'data_hora_conclusao': Timestamp.now(),
-          if (resultado.isNotEmpty) 'resultado_reuniao': resultado,
+          if (resultadoFinal.isNotEmpty) 'resultado_reuniao': resultadoFinal,
         });
 
         // Registrar interação
         await FirebaseFirestore.instance.collection('interacoes').add({
           'lead_id': widget.lead.id,
           'data_hora': Timestamp.now(),
-          'tipo': 'reuniao',
+          'tipo': 'agendamento_concluido',
           'descricao': 'Agendamento concluído: ${_getAgendamentoTipoDisplay(agendamento.tipo)}',
-          'observacoes': resultado.isEmpty ? null : resultado,
+          'observacoes': resultadoFinal.isEmpty ? null : resultadoFinal,
         });
 
         if (mounted) {
@@ -1127,16 +1139,16 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
     }
   }
 
-  String _formatPrioridade(String prioridade) {
-    switch (prioridade.toLowerCase()) {
-      case 'baixa':
-        return 'Baixa';
-      case 'media':
-        return 'Média';
-      case 'alta':
-        return 'Alta';
+  String _formatQualificacao(String qualificacao) {
+    switch (qualificacao.toLowerCase()) {
+      case 'frio':
+        return 'Frio 🔵';
+      case 'morno':
+        return 'Morno 🟡';
+      case 'quente':
+        return 'Quente 🔴';
       default:
-        return prioridade;
+        return qualificacao;
     }
   }
 
@@ -1218,9 +1230,20 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
-    final uri = Uri.parse('tel:$cleanPhone');
-    if (await canLaunchUrl(uri)) {
+    try {
+      // Limpar telefone removendo caracteres especiais
+      String cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+
+      // Adicionar código do Brasil (+55) se não tiver código de país
+      // Telefones brasileiros têm 11 dígitos (DDD + número)
+      if (cleanPhone.length == 11 && !cleanPhone.startsWith('55')) {
+        cleanPhone = '55$cleanPhone';
+      }
+
+      final uri = Uri.parse('tel:+$cleanPhone');
+      debugPrint('🔍 Tentando fazer ligação para: tel:+$cleanPhone');
+
+      // Tentar abrir o discador
       await launchUrl(uri);
 
       // Registrar interação automaticamente
@@ -1252,19 +1275,39 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
           );
         }
       } catch (e) {
-        // Erro silencioso - não interrompe o fluxo
         debugPrint('Erro ao registrar ligação: $e');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Não foi possível abrir o discador. Telefone: $phoneNumber'),
+            backgroundColor: AppTheme.dangerRed,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
 
   Future<void> _openWhatsApp(String phoneNumber, String nome) async {
-    final cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
-    final message = Uri.encodeComponent(
-      'Olá $nome! Vi seu interesse em energia solar através do nosso site. Como posso ajudá-lo?',
-    );
-    final uri = Uri.parse('https://wa.me/55$cleanPhone?text=$message');
-    if (await canLaunchUrl(uri)) {
+    try {
+      // Limpar telefone removendo caracteres especiais
+      String cleanPhone = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+
+      // WhatsApp precisa do código do país sem o +
+      // Adicionar código do Brasil (55) se não tiver
+      if (cleanPhone.length == 11 && !cleanPhone.startsWith('55')) {
+        cleanPhone = '55$cleanPhone';
+      }
+
+      final message = Uri.encodeComponent(
+        'Olá $nome! Vi seu interesse em energia solar através do nosso site. Como posso ajudá-lo?',
+      );
+      final uri = Uri.parse('https://wa.me/$cleanPhone?text=$message');
+      debugPrint('🔍 Tentando abrir WhatsApp para: https://wa.me/$cleanPhone');
+
+      // Abrir WhatsApp em aplicativo externo
       await launchUrl(uri, mode: LaunchMode.externalApplication);
 
       // Registrar interação automaticamente
@@ -1298,16 +1341,29 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
       } catch (e) {
         debugPrint('Erro ao registrar WhatsApp: $e');
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Não foi possível abrir WhatsApp. Tel: $phoneNumber'),
+            backgroundColor: AppTheme.dangerRed,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
   Future<void> _sendEmail(String email, String nome) async {
-    final subject = Uri.encodeComponent('Proposta de Energia Solar - Grupo Solar');
-    final body = Uri.encodeComponent(
-      'Olá $nome,\n\nObrigado pelo seu interesse em energia solar!\n\nEstamos preparando uma proposta personalizada para você.\n\nAtenciosamente,\nGrupo Solar',
-    );
-    final uri = Uri.parse('mailto:$email?subject=$subject&body=$body');
-    if (await canLaunchUrl(uri)) {
+    try {
+      final subject = Uri.encodeComponent('Proposta de Energia Solar - Grupo Solar');
+      final body = Uri.encodeComponent(
+        'Olá $nome,\n\nObrigado pelo seu interesse em energia solar!\n\nEstamos preparando uma proposta personalizada para você.\n\nAtenciosamente,\nGrupo Solar',
+      );
+      final uri = Uri.parse('mailto:$email?subject=$subject&body=$body');
+      debugPrint('🔍 Tentando abrir cliente de e-mail para: mailto:$email');
+
+      // Tentar abrir cliente de e-mail
       await launchUrl(uri);
 
       // Registrar interação automaticamente
@@ -1340,6 +1396,16 @@ class _LeadDetailsPageState extends State<LeadDetailsPage> {
         }
       } catch (e) {
         debugPrint('Erro ao registrar e-mail: $e');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Não foi possível abrir o cliente de e-mail. Email: $email'),
+            backgroundColor: AppTheme.dangerRed,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }

@@ -61,6 +61,8 @@ class Interacao extends Equatable {
       case 'reuniao':
       case 'visita':
         return '🤝';
+      case 'agendamento_concluido':
+        return '✅';
       case 'status_change':
         return '🔄';
       case 'nota':
@@ -83,6 +85,8 @@ class Interacao extends Equatable {
         return 'Reunião';
       case 'visita':
         return 'Visita';
+      case 'agendamento_concluido':
+        return 'Agendamento Concluído';
       case 'status_change':
         return 'Mudança de Status';
       case 'nota':

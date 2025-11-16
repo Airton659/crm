@@ -1,0 +1,899 @@
+FASE 1 - AUTENTICAÇÃO E VISUALIZAÇÃO BÁSICA
+1.1 TESTES DE AUTENTICAÇÃO
+Teste 1.1.1: Login com Credenciais Válidas
+Passos:
+	1	Abrir o App Gestor
+	2	Inserir email: gestor@gruposolar.com
+	3	Inserir senha: senha válida
+	4	Clicar em "Entrar"
+Resultado Esperado:
+	•	✅ Loading indicator aparece
+	•	✅ Redirecionamento para Dashboard
+	•	✅ Sem mensagens de erro
+	•	✅ AuthBloc emite estado Authenticated
+Teste 1.1.2: Login com Email Inválido
+Passos:
+	1	Inserir email: invalido@teste.com
+	2	Inserir senha: qualquer
+	3	Clicar em "Entrar"
+Resultado Esperado:
+	•	✅ Mensagem de erro: "Usuário não encontrado" ou similar
+	•	✅ Permanece na tela de login
+	•	✅ Campos não são limpos
+Teste 1.1.3: Login com Senha Incorreta
+Passos:
+	1	Inserir email válido
+	2	Inserir senha: senhaerrada123
+	3	Clicar em "Entrar"
+Resultado Esperado:
+	•	✅ Mensagem de erro: "Senha incorreta"
+	•	✅ Permanece na tela de login
+Teste 1.1.4: Validação de Campos Vazios
+Passos:
+	1	Deixar email vazio
+	2	Tentar fazer login
+Resultado Esperado:
+	•	✅ Erro de validação no campo email
+	•	✅ Não tenta autenticar
+Teste 1.1.5: Logout
+Passos:
+	1	Fazer login
+	2	No Dashboard, clicar no ícone de logout (canto superior direito)
+Resultado Esperado:
+	•	✅ Redirecionamento para tela de login
+	•	✅ AuthBloc emite estado Unauthenticated
+	•	✅ Não é possível voltar ao dashboard
+
+1.2 TESTES DO DASHBOARD (VISÃO GERAL)
+Teste 1.2.1: Carregar Dashboard
+Passos:
+	1	Fazer login
+	2	Observar dashboard
+Resultado Esperado:
+	•	✅ Logo "Grupo Solar" visível no AppBar
+	•	✅ Título "Painel do Gestor"
+	•	✅ KPIs carregados e exibidos:
+	◦	Novos Leads (Mês)
+	◦	Orçamentos Enviados
+	◦	Projetos Fechados
+	◦	Taxa de Conversão
+	•	✅ Lista de leads visível
+	•	✅ Barra de busca presente
+	•	✅ Filtros visíveis
+Teste 1.2.2: KPIs com Dados
+Passos:
+	1	Verificar valores dos KPIs
+Resultado Esperado:
+	•	✅ Números são exibidos corretamente
+	•	✅ Taxa de conversão em formato "X.X%"
+	•	✅ Cores corretas:
+	◦	Azul escuro: Novos Leads
+	◦	Azul: Orçamentos
+	◦	Verde: Projetos Fechados
+	◦	Amarelo: Taxa de Conversão
+Teste 1.2.3: Lista de Leads
+Passos:
+	1	Observar lista de leads no dashboard
+Resultado Esperado:
+	•	✅ Cards de leads são exibidos
+	•	✅ Cada card mostra:
+	◦	Nome do lead
+	◦	Email e telefone
+	◦	Origem
+	◦	Emoji de qualificação (🔵/🟡/🔴)
+	◦	Chip de status colorido
+	◦	Botões de telefone e WhatsApp
+	◦	Última interação (se houver)
+	•	✅ Ordenação por data de criação (mais recente primeiro)
+Teste 1.2.4: Pull to Refresh
+Passos:
+	1	No dashboard, puxar para baixo (pull down)
+	2	Soltar
+Resultado Esperado:
+	•	✅ Indicador de loading aparece
+	•	✅ Dados são recarregados
+	•	✅ KPIs e leads atualizados
+
+1.3 TESTES DE VISUALIZAÇÃO DE LEAD
+Teste 1.3.1: Abrir Detalhes do Lead
+Passos:
+	1	No dashboard, clicar em qualquer card de lead
+Resultado Esperado:
+	•	✅ Navega para LeadDetailsPage
+	•	✅ AppBar mostra nome do lead
+	•	✅ Botões de ação no AppBar (telefone, WhatsApp, email)
+	•	✅ Todas seções visíveis:
+	◦	Status e Qualificação
+	◦	Informações do Lead
+	◦	Origem do Lead
+Teste 1.3.2: Informações do Lead
+Passos:
+	1	Verificar seção "Informações do Lead"
+Resultado Esperado:
+	•	✅ Todos os campos exibidos:
+	◦	Nome
+	◦	Email
+	◦	Telefone
+	◦	Consumo (kWh/mês)
+	◦	Tipo de Telhado
+	◦	Tipo de Serviço (se houver)
+	◦	Valor Estimado (se houver, destacado)
+Teste 1.3.3: Origem do Lead
+Passos:
+	1	Verificar seção "Origem do Lead"
+Resultado Esperado:
+	•	✅ Fonte exibida (Google, Instagram, etc.)
+	•	✅ Meio exibido
+	•	✅ Campanha exibida (se houver)
+	•	✅ IP do usuário exibido
+	•	✅ User Agent exibido
+
+FASE 2 - CONTROLES E INTERAÇÕES
+2.1 TESTES DE CONTROLE DE STATUS
+Teste 2.1.1: Visualizar Status Atual
+Passos:
+	1	Abrir detalhes de um lead
+	2	Verificar seção "Status e Prioridade"
+Resultado Esperado:
+	•	✅ Dropdown de status visível
+	•	✅ Status atual selecionado
+	•	✅ Opções disponíveis:
+	◦	Novo
+	◦	Em Atendimento
+	◦	Proposta Enviada
+	◦	Convertido
+	◦	Perdido
+Teste 2.1.2: Alterar Status
+Passos:
+	1	Mudar status de "Novo" para "Em Atendimento"
+	2	Observar mudanças
+Resultado Esperado:
+	•	✅ Dropdown atualiza imediatamente
+	•	✅ SnackBar verde: "Status atualizado para: Em Atendimento"
+	•	✅ No Firebase → leads: campo status atualizado
+	•	✅ No Firebase → interacoes: nova entrada com tipo status_change
+	•	✅ Timeline mostra interação de mudança de status
+Teste 2.1.3: Status no Dashboard Atualizado
+Passos:
+	1	Alterar status de um lead
+	2	Voltar ao dashboard
+	3	Localizar o lead
+Resultado Esperado:
+	•	✅ Chip de status mostra novo valor
+	•	✅ Cor do chip corresponde ao status
+
+2.2 TESTES DE QUALIFICAÇÃO
+Teste 2.2.1: Visualizar Qualificação Atual
+Passos:
+	1	Na seção "Status e Prioridade"
+	2	Observar chips de qualificação
+Resultado Esperado:
+	•	✅ Três chips visíveis:
+	◦	Frio 🔵
+	◦	Morno 🟡
+	◦	Quente 🔴
+	•	✅ Chip atual tem fundo preenchido
+	•	✅ Borda mais grossa no selecionado
+Teste 2.2.2: Alterar Qualificação
+Passos:
+	1	Clicar em chip diferente (ex: de Frio para Quente)
+	2	Observar mudanças
+Resultado Esperado:
+	•	✅ Chip visual atualiza imediatamente
+	•	✅ SnackBar verde: "Qualificação atualizada para: Quente 🔴"
+	•	✅ No Firebase → leads: campo qualificacao = "quente"
+	•	✅ No dashboard, emoji atualiza
+Teste 2.2.3: Qualificação no Dashboard
+Passos:
+	1	Verificar badge de qualificação no card do lead
+Resultado Esperado:
+	•	✅ Emoji correto (🔵/🟡/🔴)
+	•	✅ Borda com cor correspondente
+
+2.3 TESTES DE FILTROS
+Teste 2.3.1: Filtrar por Status
+Passos:
+	1	No dashboard, clicar em chip "Status"
+	2	Selecionar "Em Atendimento"
+	3	Observar lista
+Resultado Esperado:
+	•	✅ Dialog com opções de status
+	•	✅ Apenas leads "Em Atendimento" são exibidos
+	•	✅ Contador atualiza: "X leads"
+	•	✅ Chip de filtro fica azul com check
+	•	✅ Botão "Limpar" aparece
+Teste 2.3.2: Filtrar por Qualificação
+Passos:
+	1	Clicar em chip "Qualificação"
+	2	Selecionar "Quente 🔴"
+Resultado Esperado:
+	•	✅ Apenas leads "quente" são exibidos
+	•	✅ Filtro é aplicado localmente (sem query ao Firebase)
+Teste 2.3.3: Filtrar por Origem
+Passos:
+	1	Clicar em chip "Origem"
+	2	Selecionar "Instagram"
+Resultado Esperado:
+	•	✅ Apenas leads do Instagram são exibidos
+	•	✅ Query ao Firebase é executada
+Teste 2.3.4: Múltiplos Filtros
+Passos:
+	1	Aplicar filtro de Status: "Em Atendimento"
+	2	Aplicar filtro de Qualificação: "Quente"
+	3	Observar resultado
+Resultado Esperado:
+	•	✅ Leads que satisfazem AMBOS os critérios
+	•	✅ Ambos os chips ficam azuis
+Teste 2.3.5: Limpar Filtros
+Passos:
+	1	Com filtros aplicados, clicar em "Limpar"
+Resultado Esperado:
+	•	✅ Todos os chips voltam ao estado normal
+	•	✅ Lista completa é exibida
+	•	✅ Botão "Limpar" desaparece
+Teste 2.3.6: Sem Resultados
+Passos:
+	1	Aplicar combinação de filtros que não retorna resultados
+Resultado Esperado:
+	•	✅ Ícone de lupa vazia
+	•	✅ Mensagem: "Nenhum lead corresponde aos filtros"
+
+2.4 TESTES DE BUSCA
+Teste 2.4.1: Buscar por Nome
+Passos:
+	1	Na barra de busca, digitar nome de um lead (ex: "João")
+Resultado Esperado:
+	•	✅ Lista filtra em tempo real
+	•	✅ Apenas leads com "joão" no nome são exibidos
+	•	✅ Busca é case-insensitive
+Teste 2.4.2: Buscar por Email
+Passos:
+	1	Digitar parte de um email (ex: "gmail")
+Resultado Esperado:
+	•	✅ Leads com "@gmail.com" são exibidos
+Teste 2.4.3: Buscar por Telefone
+Passos:
+	1	Digitar parte de um telefone (ex: "9999")
+Resultado Esperado:
+	•	✅ Leads com esse número aparecem
+Teste 2.4.4: Limpar Busca
+Passos:
+	1	Com texto na busca, clicar no X
+Resultado Esperado:
+	•	✅ Campo limpa
+	•	✅ Lista completa retorna
+Teste 2.4.5: Busca + Filtros
+Passos:
+	1	Aplicar filtro de status
+	2	Fazer busca textual
+Resultado Esperado:
+	•	✅ Leads que satisfazem filtro E busca são exibidos
+
+2.5 TESTES DA TIMELINE DE INTERAÇÕES
+Teste 2.5.1: Visualizar Timeline
+Passos:
+	1	Abrir detalhes de um lead que tem interações
+	2	Scroll até "Timeline de Interações"
+Resultado Esperado:
+	•	✅ Seção "Timeline de Interações" visível
+	•	✅ Interações ordenadas por data (mais recente primeiro)
+	•	✅ Limite de 20 interações
+Teste 2.5.2: Tipos de Interações na Timeline
+Verificar que cada tipo tem ícone correto:
+Tipo
+Ícone
+Cor
+nota
+📝
+Azul
+ligacao
+📞
+Verde
+whatsapp
+💬
+Verde
+email
+📧
+Vermelho
+reuniao
+🤝
+Roxo
+agendamento
+📅
+Azul
+status_change
+🔄
+Laranja
+Teste 2.5.3: Formato de Data/Hora
+Verificar formatação:
+	•	✅ Menos de 1 min: "agora mesmo"
+	•	✅ Menos de 1 hora: "há Xmin"
+	•	✅ Menos de 24h: "há Xh"
+	•	✅ Menos de 7 dias: "há Xd"
+	•	✅ Menos de 30 dias: "há Xsem"
+	•	✅ Menos de 1 ano: "há Xm"
+	•	✅ Mais de 1 ano: "há Xa"
+Teste 2.5.4: Timeline Vazia
+Passos:
+	1	Abrir lead sem interações
+Resultado Esperado:
+	•	✅ Mensagem: "Nenhuma interação registrada"
+	•	✅ Ícone de timeline vazia
+	•	✅ Texto sugerindo adicionar nota
+Teste 2.5.5: Detalhes da Interação de Status
+Passos:
+	1	Localizar interação tipo status_change
+Resultado Esperado:
+	•	✅ Mostra "Status alterado"
+	•	✅ Exibe status anterior → status novo
+
+FASE 3 - FUNCIONALIDADES AVANÇADAS
+3.1 TESTES DO SISTEMA DE NOTAS
+Teste 3.1.1: Adicionar Nota Básica
+Passos:
+	1	Abrir detalhes de um lead
+	2	Clicar em "Adicionar Nota" (botão ou ícone 📝)
+	3	Preencher descrição: "Cliente solicitou visita técnica"
+	4	Deixar observações vazio
+	5	Clicar em "Salvar"
+Resultado Esperado:
+	•	✅ Dialog fecha
+	•	✅ SnackBar verde: "Nota adicionada com sucesso!"
+	•	✅ Nova entrada na timeline com ícone 📝
+	•	✅ Firebase → interacoes: tipo = 'nota'
+	•	✅ Firebase → leads: ultima_interacao atualizado
+Teste 3.1.2: Nota com Observações
+Passos:
+	1	Adicionar nota
+	2	Descrição: "Segundo contato"
+	3	Observações: "Cliente quer orçamento 10kW"
+	4	Salvar
+Resultado Esperado:
+	•	✅ Ambos campos aparecem na timeline
+	•	✅ Observações em texto menor/itálico
+Teste 3.1.3: Validação Obrigatória
+Passos:
+	1	Abrir dialog de nota
+	2	Deixar descrição vazia
+	3	Tentar salvar
+Resultado Esperado:
+	•	✅ Erro: "Por favor, informe a descrição"
+	•	✅ Dialog não fecha
+Teste 3.1.4: Loading State
+Passos:
+	1	Preencher nota
+	2	Clicar em salvar
+	3	Observar durante salvamento
+Resultado Esperado:
+	•	✅ Botão "Salvar" mostra loading
+	•	✅ Campos desabilitados durante salvamento
+	•	✅ Botão "Cancelar" desabilitado
+Teste 3.1.5: Cancelar Nota
+Passos:
+	1	Preencher nota
+	2	Clicar em "Cancelar"
+Resultado Esperado:
+	•	✅ Dialog fecha sem salvar
+	•	✅ Nenhuma interação criada
+
+3.2 TESTES DO SISTEMA DE AGENDAMENTOS
+Teste 3.2.1: Criar Agendamento - Visita Técnica
+Passos:
+	1	Abrir lead
+	2	Clicar em "Agendar" (ícone calendário)
+	3	Tipo: "Visita Técnica 🏠"
+	4	Data: amanhã
+	5	Hora: 14:00
+	6	Local: "Rua das Flores, 123"
+	7	Observações: "Levar escada"
+	8	Clicar em "Agendar"
+Resultado Esperado:
+	•	✅ Dialog fecha
+	•	✅ SnackBar verde: "Agendamento criado com sucesso!"
+	•	✅ Card na seção "Agendamentos Pendentes"
+	•	✅ Badge "📅 AMANHÃ" (se amanhã)
+	•	✅ Ícone 🏠 e fundo roxo claro
+	•	✅ Horário "14:00" exibido
+	•	✅ Local exibido
+	•	✅ Firebase → agendamentos: nova entrada
+	•	✅ Firebase → leads: proximo_agendamento = data/hora
+	•	✅ Timeline: "Agendamento criado: Visita Técnica"
+Teste 3.2.2: Agendamento para Hoje
+Passos:
+	1	Criar agendamento
+	2	Tipo: "Reunião 🤝"
+	3	Data: hoje
+	4	Hora: daqui a 2 horas
+Resultado Esperado:
+	•	✅ Badge "📍 HOJE" (cor laranja)
+	•	✅ Apenas horário exibido (sem data)
+Teste 3.2.3: Agendamento Atrasado
+Passos:
+	1	No Firebase Console, criar agendamento:
+	◦	data_hora: ontem
+	◦	concluido: false
+	2	Recarregar app
+Resultado Esperado:
+	•	✅ Badge "⚠️ ATRASADO" (vermelho)
+	•	✅ Fundo vermelho claro no card
+Teste 3.2.4: Tipos de Agendamento
+Verificar cores e ícones para cada tipo:
+Tipo
+Ícone
+Cor
+visita
+🏠
+Roxo
+reuniao
+🤝
+Azul
+ligacao
+📞
+Verde
+apresentacao
+📊
+Laranja
+Teste 3.2.5: Date Picker
+Passos:
+	1	Abrir dialog de agendamento
+	2	Clicar no campo de data
+	3	Tentar selecionar data passada
+Resultado Esperado:
+	•	✅ Datas passadas desabilitadas
+	•	✅ firstDate = hoje
+	•	✅ lastDate = hoje + 365 dias
+	•	✅ Locale em PT-BR
+Teste 3.2.6: Time Picker
+Passos:
+	1	Clicar no campo de horário
+Resultado Esperado:
+	•	✅ Time picker Material Design
+	•	✅ Formato 24h
+	•	✅ Horário atual pré-selecionado
+Teste 3.2.7: Validação de Local
+Passos:
+	1	Deixar campo "Local" vazio
+	2	Tentar salvar
+Resultado Esperado:
+	•	✅ Erro: "Por favor, informe o local"
+Teste 3.2.8: Marcar como Concluído
+Passos:
+	1	Localizar agendamento pendente
+	2	Clicar no botão verde (✓)
+	3	Escrever resultado: "Cliente aceitou proposta"
+	4	Confirmar
+Resultado Esperado:
+	•	✅ Dialog fecha
+	•	✅ SnackBar verde: "Agendamento marcado como concluído!"
+	•	✅ Card desaparece da seção
+	•	✅ Firebase → agendamentos:
+	◦	concluido: true
+	◦	data_hora_conclusao: timestamp
+	◦	resultado_reuniao: texto
+	•	✅ Timeline: "Agendamento concluído: [tipo]"
+Teste 3.2.9: Concluir sem Resultado
+Passos:
+	1	Marcar como concluído
+	2	Deixar resultado vazio
+	3	Confirmar
+Resultado Esperado:
+	•	✅ Agendamento é concluído
+	•	✅ Campo resultado_reuniao não é criado
+Teste 3.2.10: Múltiplos Agendamentos
+Passos:
+	1	Criar 6 agendamentos para o mesmo lead
+Resultado Esperado:
+	•	✅ Todos aparecem na seção
+	•	✅ Ordenados por data/hora (próximo primeiro)
+	•	✅ Limit de 5 mais próximos exibidos
+
+3.3 TESTES DE REGISTRO AUTOMÁTICO
+Teste 3.3.1: Auto-registro de Ligação
+Passos:
+	1	Abrir lead
+	2	Clicar no ícone de telefone (AppBar ou seção)
+	3	App de telefone abre
+	4	Voltar ao app
+Resultado Esperado:
+	•	✅ SnackBar verde: "📞 Ligação registrada!"
+	•	✅ Timeline: nova entrada tipo 'ligacao'
+	•	✅ Descrição: "Ligação realizada para [nome]"
+	•	✅ Observações: "Telefone: [número]"
+	•	✅ Firebase → interacoes: tipo = 'ligacao'
+	•	✅ ultima_interacao atualizado
+Teste 3.3.2: Auto-registro de WhatsApp
+Passos:
+	1	Clicar em WhatsApp
+	2	WhatsApp abre
+	3	Voltar ao app
+Resultado Esperado:
+	•	✅ SnackBar: "💬 WhatsApp registrado!"
+	•	✅ Interação tipo 'whatsapp' criada
+	•	✅ Mensagem pré-formatada no WhatsApp
+Teste 3.3.3: Auto-registro de Email
+Passos:
+	1	Clicar em email
+	2	Cliente de email abre
+	3	Voltar ao app
+Resultado Esperado:
+	•	✅ SnackBar: "📧 E-mail registrado!"
+	•	✅ Interação tipo 'email'
+Teste 3.3.4: Auto-registro de Mudança de Status
+Passos:
+	1	Mudar status de "Novo" para "Em Atendimento"
+Resultado Esperado:
+	•	✅ SnackBar: "Status atualizado para: Em Atendimento"
+	•	✅ Firebase → interacoes:
+	◦	tipo: 'status_change'
+	◦	status_anterior: 'novo'
+	◦	status_novo: 'em_atendimento'
+	•	✅ Timeline mostra mudança
+Teste 3.3.5: Erro Silencioso
+Passos:
+	1	Desconectar internet
+	2	Fazer ligação
+Resultado Esperado:
+	•	✅ Tel: link funciona (abre app de telefone)
+	•	✅ Erro de salvamento é silencioso (try-catch)
+	•	✅ Usuário não vê erro
+	•	✅ Log no console: "Erro ao registrar ligação: [erro]"
+
+3.4 TESTES DO DASHBOARD DE AGENDAMENTOS
+Teste 3.4.1: Visualizar Dashboard de Agenda
+Passos:
+	1	Ir ao Dashboard principal
+	2	Localizar seção "Agenda" (entre KPIs e busca)
+Resultado Esperado:
+	•	✅ Card "Agenda" visível
+	•	✅ Ícone de calendário (azul)
+	•	✅ Título "Agenda"
+	•	✅ Contador: "X agendamentos"
+	•	✅ Três categorias:
+	◦	⚠️ ATRASADOS (vermelho)
+	◦	📍 HOJE (laranja)
+	◦	📅 PRÓXIMOS (azul)
+Teste 3.4.2: Cards de Agendamento
+Verificar cada card:
+	•	✅ Barra colorida lateral (4px)
+	•	✅ Ícone do tipo
+	•	✅ Nome do lead
+	•	✅ Tipo descritivo ("Visita Técnica")
+	•	✅ Local
+	•	✅ Horário formatado (HH:MM)
+	•	✅ Data curta (DD/MM) se não for hoje
+Teste 3.4.3: Navegação ao Clicar
+Passos:
+	1	Clicar em qualquer card de agendamento
+Resultado Esperado:
+	•	✅ Navega para LeadDetailsPage do lead
+	•	✅ Informações corretas
+Teste 3.4.4: Atualização em Tempo Real
+Passos:
+	1	Com dashboard aberto
+	2	Em outro dispositivo/console, criar agendamento
+	3	Observar
+Resultado Esperado:
+	•	✅ Novo agendamento aparece automaticamente
+	•	✅ Contador atualiza
+	•	✅ StreamBuilder funcionando
+Teste 3.4.5: Dashboard Vazio
+Passos:
+	1	Concluir todos agendamentos
+Resultado Esperado:
+	•	✅ Seção "Agenda" desaparece completamente
+	•	✅ Espaço é recuperado
+Teste 3.4.6: Limite de Próximos
+Passos:
+	1	Criar 10 agendamentos futuros
+Resultado Esperado:
+	•	✅ Seção "PRÓXIMOS" mostra apenas 3
+	•	✅ Os 3 mais próximos
+Teste 3.4.7: Categorização Correta
+Criar agendamentos para testar:
+	•	Ontem 10h → categoria ATRASADOS
+	•	Hoje 14h → categoria HOJE
+	•	Amanhã 9h → categoria PRÓXIMOS
+	•	Semana que vem → categoria PRÓXIMOS
+Resultado Esperado:
+	•	✅ Cada um na categoria correta
+Teste 3.4.8: Erro no Stream
+Passos:
+	1	Desconectar internet
+	2	Observar seção de agenda
+Resultado Esperado:
+	•	✅ Seção desaparece (SizedBox.shrink)
+	•	✅ Sem crash
+	•	✅ Quando reconectar, reaparece
+
+3.5 TESTES DE FEEDBACKS VISUAIS
+Teste 3.5.1: SnackBars de Sucesso
+Verificar cada ação e seu feedback:
+Ação
+SnackBar
+Cor
+Duração
+Nota salva
+"Nota adicionada com sucesso!"
+Verde
+2s
+Agendamento criado
+"Agendamento criado com sucesso!"
+Verde
+2s
+Agendamento concluído
+"Agendamento marcado como concluído!"
+Verde
+2s
+Status atualizado
+"Status atualizado para: [status]"
+Verde
+2s
+Qualificação atualizada
+"Qualificação atualizada para: [emoji]"
+Verde
+2s
+Ligação registrada
+"📞 Ligação registrada!"
+Verde
+2s
+WhatsApp registrado
+"💬 WhatsApp registrado!"
+Verde
+2s
+Email registrado
+"📧 E-mail registrado!"
+Verde
+2s
+Teste 3.5.2: SnackBars de Erro
+Simular erros:
+	•	Desconectar internet
+	•	Tentar salvar nota
+Resultado Esperado:
+	•	✅ SnackBar vermelho (AppTheme.dangerRed)
+	•	✅ Mensagem do erro
+	•	✅ Duração: 3 segundos
+Teste 3.5.3: Sequência de SnackBars
+Passos:
+	1	Fazer 3 ações rápidas:
+	◦	Atualizar status
+	◦	Fazer ligação
+	◦	Enviar WhatsApp
+Resultado Esperado:
+	•	✅ 3 SnackBars aparecem em fila
+	•	✅ Cada um visível por 2s
+	•	✅ Não se sobrepõem
+Teste 3.5.4: Dismissível
+Passos:
+	1	Acionar SnackBar
+	2	Deslizar para dispensar
+Resultado Esperado:
+	•	✅ SnackBar desaparece imediatamente
+Teste 3.5.5: BlocListener de Erros
+Passos:
+	1	Em LeadDetailsPage
+	2	Simular erro ao atualizar status (desconectar)
+	3	Tentar atualizar
+Resultado Esperado:
+	•	✅ LeadsBloc emite LeadsError
+	•	✅ BlocListener captura
+	•	✅ SnackBar vermelho aparece
+	•	✅ Mensagem de erro exibida
+
+TESTES DE INTEGRAÇÃO COMPLETA
+4.1 FLUXO COMPLETO: DO LEAD AO FECHAMENTO
+Teste 4.1.1: Jornada Completa
+Passos:
+	1	Login como gestor
+	2	Dashboard: verificar novo lead "João Silva" (status: novo)
+	3	Abrir lead: clicar no card
+	4	Qualificar: marcar como "Quente 🔴"
+	◦	✅ SnackBar aparece
+	5	Fazer ligação: clicar em telefone
+	◦	✅ App abre, SnackBar de registro
+	6	Adicionar nota: "Cliente interessado em sistema 5kW"
+	◦	✅ Salva com sucesso
+	7	Agendar visita: amanhã às 14h
+	◦	✅ Agendamento criado
+	8	Atualizar status: "Em Atendimento"
+	◦	✅ Status muda, interação registrada
+	9	Voltar ao dashboard
+	◦	✅ Lead está com novo status
+	◦	✅ Agendamento aparece na seção "Agenda"
+	10	Clicar no agendamento no dashboard
+	◦	✅ Navega para o lead correto
+	11	Verificar timeline
+	◦	✅ Todas interações aparecem:
+	▪	Qualificação atualizada
+	▪	Ligação
+	▪	Nota
+	▪	Agendamento criado
+	▪	Status alterado
+Firebase Validation:
+	•	✅ leads: todos campos atualizados
+	•	✅ interacoes: 5 entradas
+	•	✅ agendamentos: 1 entrada
+
+4.2 TESTES DE ERROS E EDGE CASES
+Teste 4.2.1: Sem Conexão - Todas Ações
+Passos:
+	1	Desconectar internet
+	2	Tentar cada ação:
+	◦	Adicionar nota
+	◦	Criar agendamento
+	◦	Atualizar status
+	◦	Atualizar qualificação
+Resultado Esperado:
+	•	✅ Cada ação mostra erro apropriado
+	•	✅ SnackBars vermelhos
+	•	✅ Dados não são perdidos nos forms
+	•	✅ Usuário pode retentar
+Teste 4.2.2: Lead Sem Interações
+Passos:
+	1	Criar lead novo (sem histórico)
+	2	Abrir detalhes
+Resultado Esperado:
+	•	✅ Timeline mostra estado vazio
+	•	✅ Mensagem apropriada
+	•	✅ Sem agendamentos pendentes
+Teste 4.2.3: Lead com Muitas Interações (50+)
+Passos:
+	1	Lead com 50+ interações
+	2	Abrir detalhes
+	3	Verificar timeline
+Resultado Esperado:
+	•	✅ Apenas 20 mais recentes
+	•	✅ Performance OK
+	•	✅ Scroll suave
+Teste 4.2.4: Múltiplos Agendamentos Simultâneos
+Passos:
+	1	Criar 3 agendamentos rápido:
+	◦	Hoje 10h
+	◦	Hoje 14h
+	◦	Amanhã 9h
+Resultado Esperado:
+	•	✅ Todos salvos corretamente
+	•	✅ Ordenação correta
+	•	✅ Dashboard mostra todos
+Teste 4.2.5: Agendamento no Limite de Dia
+Passos:
+	1	Criar agendamento para hoje às 23:59
+Resultado Esperado:
+	•	✅ Categorizado como HOJE
+	•	✅ Após meia-noite, vira ATRASADO
+Teste 4.2.6: Lead Deletado com Agendamento
+Passos:
+	1	No Firebase, deletar lead que tem agendamento
+	2	Verificar dashboard
+Resultado Esperado:
+	•	✅ FutureBuilder não encontra lead
+	•	✅ Card não aparece (SizedBox.shrink)
+	•	✅ Sem crash
+
+4.3 TESTES DE PERFORMANCE
+Teste 4.3.1: Dashboard com 100+ Leads
+Passos:
+	1	Popular Firebase com 100+ leads
+	2	Abrir dashboard
+Resultado Esperado:
+	•	✅ Carrega em < 3 segundos
+	•	✅ Scroll suave
+	•	✅ Sem lag
+Teste 4.3.2: Filtros em Larga Escala
+Passos:
+	1	Com 100+ leads
+	2	Aplicar filtro de status
+Resultado Esperado:
+	•	✅ Filtragem instantânea (< 500ms)
+	•	✅ UI responsiva
+Teste 4.3.3: Busca em Tempo Real
+Passos:
+	1	Digitar caractere por caractere
+Resultado Esperado:
+	•	✅ Cada keystroke filtra instantaneamente
+	•	✅ Sem debounce visível
+Teste 4.3.4: StreamBuilder Rebuilds
+Usar Flutter DevTools:
+	•	✅ Verificar rebuilds desnecessários
+	•	✅ StreamBuilder não reconstrói toda árvore
+	•	✅ Apenas widgets afetados
+
+4.4 TESTES DE UX/UI
+Teste 4.4.1: Cores e Temas
+Verificar paleta:
+	•	Primary Blue: #1E3A8A e #3B82F6
+	•	Success Green: #10B981
+	•	Danger Red: vermelho
+	•	Warning Orange/Yellow: #F59E0B
+Teste 4.4.2: Responsividade
+Testar em diferentes tamanhos:
+	•	Celular pequeno (< 360px largura)
+	•	Celular médio (375-414px)
+	•	Tablet (768px+)
+Resultado Esperado:
+	•	✅ Layouts adaptam
+	•	✅ Textos legíveis
+	•	✅ Botões clicáveis
+Teste 4.4.3: Acessibilidade
+	•	✅ Tooltips em todos ícones
+	•	✅ Labels descritivos
+	•	✅ Contraste adequado
+	•	✅ Fontes legíveis (min 12px)
+Teste 4.4.4: Loading States
+Verificar em:
+	•	Login
+	•	Dashboard (initial load)
+	•	Lead details
+	•	Salvando nota
+	•	Criando agendamento
+Resultado Esperado:
+	•	✅ CircularProgressIndicator visível
+	•	✅ Mensagem "Carregando..." onde apropriado
+	•	✅ Botões desabilitados durante loading
+
+4.5 TESTES CROSS-PLATFORM
+Teste 4.5.1: Android
+Verificar:
+	•	✅ Material Design consistente
+	•	✅ Navegação com botão voltar
+	•	✅ SnackBars aparecem corretamente
+	•	✅ Date/Time pickers nativos
+Teste 4.5.2: iOS
+Verificar:
+	•	✅ Adaptação Cupertino onde necessário
+	•	✅ Gestos de voltar (swipe)
+	•	✅ Safe areas respeitadas
+	•	✅ Font rendering correto
+Teste 4.5.3: Web (se aplicável)
+	•	✅ Responsivo
+	•	✅ Navegação por URL
+	•	✅ Hot reload funciona
+
+CHECKLIST FINAL DE APROVAÇÃO
+✅ FUNCIONALIDADES CORE
+	•	 Login/Logout funcionando 100%
+	•	 Dashboard carrega corretamente
+	•	 KPIs exibem valores corretos
+	•	 Lista de leads completa
+	•	 Detalhes do lead visíveis
+✅ CONTROLES (FASE 2)
+	•	 Status: visualizar, alterar, persistir
+	•	 Qualificação: visualizar, alterar, persistir
+	•	 Timeline de interações funcional
+	•	 Filtros (status, qualificação, origem)
+	•	 Busca textual
+✅ FUNCIONALIDADES AVANÇADAS (FASE 3)
+	•	 Sistema de notas completo
+	•	 Sistema de agendamentos completo
+	•	 Dashboard de agenda funcional
+	•	 Registro automático de todas interações
+	•	 Feedbacks visuais (SnackBars) em todas ações
+✅ INTEGRIDADE DE DADOS
+	•	 Firebase: estrutura correta
+	•	 Timestamps corretos
+	•	 Relacionamentos (lead_id) corretos
+	•	 Campos opcionais/obrigatórios respeitados
+	•	 Dados persistem após reload
+✅ UX/UI
+	•	 Cores consistentes
+	•	 Ícones apropriados
+	•	 Loading states
+	•	 Mensagens de erro claras
+	•	 Navegação intuitiva
+	•	 Performance aceitável (< 3s loads)
+✅ QUALIDADE DE CÓDIGO
+	•	 Sem erros no console
+	•	 Sem warnings críticos
+	•	 Clean Architecture mantida
+	•	 BLoC pattern correto
+	•	 Dependency injection funcionando
+
+📊 MÉTRICAS DE SUCESSO
+O sistema está pronto para produção se:
+	1	✅ 95%+ dos testes passam
+	2	✅ Não há bugs críticos (crashes, perda de dados)
+	3	✅ Performance é aceitável (loads < 3s, 60fps scroll)
+	4	✅ Todos fluxos principais funcionam end-to-end
+	5	✅ Feedbacks do usuário são claros e imediatos
+	6	✅ Firebase está estruturado corretamente
+
+TOTAL DE TESTES: 150+ casos de teste cobrindo Fases 1, 2 e 3 BOA SORTE! 🚀🔆

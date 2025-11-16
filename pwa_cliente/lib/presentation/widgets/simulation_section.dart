@@ -468,7 +468,7 @@ class _SimulationSectionState extends State<SimulationSection> {
   }
 
   Widget _buildResultCard() {
-    final monthlyPayment = InvestmentCalculator.getMonthlyPayment(_selectedConsumption);
+    final monthlyPayment = InvestmentCalculator.getMonthlyPaymentSync(_selectedConsumption);
 
     return AnimatedOpacity(
       opacity: _showResult ? 1.0 : 0.0,
@@ -566,17 +566,17 @@ class _SimulationSectionState extends State<SimulationSection> {
             ),
             const SizedBox(height: 20),
 
-            // Economia e Payback (placeholders)
+            // Economia e Payback
             _buildInfoRow(
               Icons.trending_up,
               'Economia anual estimada:',
-              'Em breve',
+              InvestmentCalculator.formatEconomiaAnual(_selectedConsumption),
             ),
             const SizedBox(height: 12),
             _buildInfoRow(
               Icons.schedule,
               'Payback (retorno do investimento):',
-              'Em breve',
+              InvestmentCalculator.formatPayback(_selectedConsumption),
             ),
 
             if (_sliderInteractions > 0) ...[

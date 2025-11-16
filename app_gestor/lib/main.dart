@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/di/injection_container.dart' as di;
@@ -39,6 +40,15 @@ class GrupoSolarGestorApp extends StatelessWidget {
         title: 'Grupo Solar - Gestor',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('pt', 'BR'),
+        ],
+        locale: const Locale('pt', 'BR'),
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             // AuthInitial - verificando auth status inicial

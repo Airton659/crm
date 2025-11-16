@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +13,7 @@ import '../../bloc/statistics/statistics_bloc.dart';
 import '../../bloc/statistics/statistics_event.dart';
 import '../../bloc/statistics/statistics_state.dart';
 import '../../../core/theme/app_theme.dart';
+import '../configuracoes/configuracoes_page.dart';
 import '../../../domain/entities/agendamento.dart';
 import '../../../domain/entities/lead.dart';
 import '../lead_details_page.dart';
@@ -27,12 +29,15 @@ class _DashboardPageState extends State<DashboardPage> {
   String? _selectedStatus;
   String? _selectedQualificacao;
   String? _selectedOrigem;
-  String _searchQuery = '';
+  final ValueNotifier<String> _searchQueryNotifier = ValueNotifier<String>('');
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchQueryNotifier.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -48,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
       _selectedStatus = null;
       _selectedQualificacao = null;
       _selectedOrigem = null;
-      _searchQuery = '';
+      _searchQueryNotifier.value = '';
       _searchController.clear();
     });
     _applyFilters();
@@ -72,6 +77,18 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ConfiguracoesPage(),
+                ),
+              );
+            },
+            tooltip: 'Configurações',
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
@@ -167,32 +184,40 @@ class _DashboardPageState extends State<DashboardPage> {
                   const SizedBox(height: 24),
 
                   // Barra de Busca
-                  TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Buscar por nome, email ou telefone...',
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                setState(() {
-                                  _searchController.clear();
-                                  _searchQuery = '';
-                                });
-                              },
-                            )
-                          : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value.toLowerCase();
-                      });
+                  ValueListenableBuilder<String>(
+                    valueListenable: _searchQueryNotifier,
+                    builder: (context, searchQuery, child) {
+                      return TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Buscar por nome, email ou telefone...',
+                          prefixIcon: const Icon(Icons.search),
+                          suffixIcon: searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    _debounce?.cancel();
+                                    _searchController.clear();
+                                    _searchQueryNotifier.value = '';
+                                  },
+                                )
+                              : null,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                        onChanged: (value) {
+                          // Cancelar o timer anterior se existir
+                          if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+                          // Criar novo timer de 300ms
+                          _debounce = Timer(const Duration(milliseconds: 300), () {
+                            _searchQueryNotifier.value = value.toLowerCase();
+                          });
+                        },
+                      );
                     },
                   ),
                   const SizedBox(height: 16),
@@ -297,23 +322,26 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  BlocBuilder<LeadsBloc, LeadsState>(
-                    builder: (context, state) {
-                      if (state is LeadsLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+                  ValueListenableBuilder<String>(
+                    valueListenable: _searchQueryNotifier,
+                    builder: (context, searchQuery, child) {
+                      return BlocBuilder<LeadsBloc, LeadsState>(
+                        builder: (context, state) {
+                          if (state is LeadsLoading) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
 
-                      if (state is LeadsError) {
-                        return Center(
-                          child: Text(
-                            state.message,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
+                          if (state is LeadsError) {
+                            return Center(
+                              child: Text(
+                                state.message,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            );
+                          }
 
-                      if (state is LeadsLoaded) {
-                        final filteredLeads = _filterLeads(state.leads);
+                          if (state is LeadsLoaded) {
+                            final filteredLeads = _filterLeads(state.leads);
 
                         if (filteredLeads.isEmpty) {
                           return Center(
@@ -350,6 +378,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             return Card(
                               margin: const EdgeInsets.only(bottom: 12),
                               child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -360,13 +389,35 @@ class _DashboardPageState extends State<DashboardPage> {
                                 },
                                 title: Text(
                                   lead.nome,
-                                  style: const TextStyle(fontWeight: FontWeight.w600),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 6),
                                     Text('${lead.email} | ${lead.telefone}'),
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      children: [
+                                        Chip(
+                                          label: Text(
+                                            AppTheme.getStatusDisplay(lead.status),
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          backgroundColor: AppTheme.getStatusColor(lead.status),
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          visualDensity: VisualDensity.compact,
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 4),
                                     Text(
                                       'Origem: ${lead.origem.displayName}',
@@ -422,16 +473,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                       tooltip: 'WhatsApp',
                                       color: const Color(0xFF10B981),
                                     ),
-                                    Chip(
-                                      label: Text(
-                                        AppTheme.getStatusDisplay(lead.status),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      backgroundColor: AppTheme.getStatusColor(lead.status),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -441,6 +482,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       }
 
                       return const SizedBox.shrink();
+                        },
+                      );
                     },
                   ),
                 ],
@@ -742,14 +785,15 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     // Busca textual
-    if (_searchQuery.isNotEmpty) {
+    final searchQuery = _searchQueryNotifier.value;
+    if (searchQuery.isNotEmpty) {
       filtered = filtered.where((lead) {
         final nome = lead.nome.toLowerCase();
         final email = lead.email.toLowerCase();
         final telefone = lead.telefone.toLowerCase();
-        return nome.contains(_searchQuery) ||
-            email.contains(_searchQuery) ||
-            telefone.contains(_searchQuery);
+        return nome.contains(searchQuery) ||
+            email.contains(searchQuery) ||
+            telefone.contains(searchQuery);
       }).toList();
     }
 
@@ -922,7 +966,7 @@ class _DashboardPageState extends State<DashboardPage> {
               _buildOrigemOption('google', 'Google'),
               _buildOrigemOption('instagram', 'Instagram'),
               _buildOrigemOption('facebook', 'Facebook'),
-              _buildOrigemOption('direct', 'Acesso Direto'),
+              _buildOrigemOption('direto', 'Acesso Direto'),
               _buildOrigemOption('referral', 'Indicação'),
             ],
           ),
@@ -968,6 +1012,7 @@ class _DashboardPageState extends State<DashboardPage> {
         return 'Instagram';
       case 'facebook':
         return 'Facebook';
+      case 'direto':
       case 'direct':
         return 'Acesso Direto';
       case 'referral':

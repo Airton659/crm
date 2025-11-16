@@ -6,6 +6,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'core/theme/app_theme.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/utils/analytics_tracker.dart';
+import 'core/utils/investment_calculator.dart';
 import 'presentation/pages/home_page.dart';
 import 'presentation/bloc/lead_form/lead_form_bloc.dart';
 
@@ -41,6 +42,11 @@ void main() async {
   AnalyticsTracker.init();
 
   print('🔥 ANALYTICS TRACKER INICIALIZADO');
+
+  // Carregar configurações do slider do Firebase
+  await InvestmentCalculator.loadConfiguration();
+
+  print('⚙️ CONFIGURAÇÕES DO SLIDER CARREGADAS');
 
   runApp(const GrupoSolarApp());
 }
